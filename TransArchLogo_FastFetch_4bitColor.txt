@@ -1,0 +1,20 @@
+[0;36m                 -`
+                 .o+`
+                `ooo/
+               `+oooo:
+[0;35m             `+oooooo:
+              -+oooooo+:
+            `/:-:++oooo+:
+           `/++++/+++++++:
+[0;37m         `/++++++++++++++:
+         `/+++ooooooooooooo/`
+        ./ooosssso++osssssso+`
+       .oossssso-````/ossssss+`
+[0;35m      -osssssso.      :ssssssso.
+     :osssssss/        osssso+++.
+    /ossssssss/        +ssssooo/-
+  `/ossssso+/:-        -:/+osssso+-
+[0;36m `+sso+:-`                 `.-/+oso:
+`++:.                           `-/+/
+.`                                 `/              
+[0m
