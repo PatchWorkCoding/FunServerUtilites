@@ -1,0 +1,68 @@
+# Hello World! This is a comment
+# These comments are written by the User (PatchWorkCoding) so she can try and understand what the hell this language is.
+
+# This a docker compose file. It defines how to instantiate different containers and link them together.
+#   Compose files are written in yaml which you can tell by the prefix of .yml or .yaml (there synonymous). 
+#   Yaml is a standard the defines variables name and values. 
+#   Its a little bit like JSON but with section headers for easier readability.
+
+# VV [SYNTAX NOTE] this is a section header. VV 
+networks: # <- Everything in here defines what networks should be created
+#^^ A network in this context is like LAN out in hardware space. ^^
+#   Containers on the defined network can only communicate with the either the larger host(analogous to the WAN), 
+#   or other containers on the same network 
+
+  gitea: #<- Name of the network being defined equivalent to an object declaration
+    external: false #<- Compose should go ahead an create this network.
+    # ^^ if this was set to true compose would try and find a pre-existing network named "gitea"
+
+services: #<-Define all the different images to run
+  server: #<- defines a service named server
+
+    image: docker.gitea.com/gitea:latest #<- specifies which image to use ':' then the version of that image.
+    # ^^ If the image isn't local it'll automatically pull from docker hub (assuming your online)
+    #   typically the "latest" key word is for the latest official release so you don't need to specify a version number.
+    #   "Nightly" is another common version name.
+
+    container_name: gitea #<- the name that shows up with when running commands like 'docker ps'
+    # ^^ also the name you can use to reference instances of this container
+    
+    environment: #<- names of variables in the image file and the values you want to pass to them in the running instance
+    # ^^ this is yml syntax for a key-value pair list.
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=mysql
+      - GITEA__database__HOST=db:3306
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=
+
+    restart: always #<- tells docker what to do when the container crashes, or the host machine/docker daemon restart
+    # ^^ In this context always means restart if any of the prior conditions is met
+    
+    networks: #<- connects the container to the "gitea" network
+      - gitea
+    
+    volumes: #<- tells the service where to put its files
+      - ./gitea:/data #<- this is a bind mount. it defines the path on the host machine where files for the container should be stored
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    
+    ports: #<- ports that the service will communicate on
+      - "3200:3000" #<- this is written in the form "host port : container port". Traffic on host port 3200 is forwarded to port 3000 in the container
+    
+    depends_on: #<- defines the services that this service needs to operate
+      - db
+
+  db:
+    image: docker.io/library/mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=gitea
+      - MYSQL_USER=gitea
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=
+    networks:
+      - gitea
+    volumes:
+      - ./mysql:/var/lib/mysql
